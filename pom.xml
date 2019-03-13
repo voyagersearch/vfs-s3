@@ -5,12 +5,7 @@
     <groupId>com.intridea.io</groupId>
     <artifactId>vfs-s3</artifactId>
     <packaging>jar</packaging>
-    <version>2.2.1-VG</version>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <version>2.2.1-VG1</version>
     
     <name>vfs-s3</name>
 
@@ -109,6 +104,8 @@
                 <aws.accessKey>${env.AWS_ACCESS_KEY}</aws.accessKey>
                 <aws.secretKey>${env.AWS_SECRET_KEY}</aws.secretKey>
                 <aws.testPrefix>${env.AWS_TEST_PREFIX}</aws.testPrefix>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
             </properties>
         </profile>
     </profiles>
