@@ -5,8 +5,13 @@
     <groupId>com.intridea.io</groupId>
     <artifactId>vfs-s3</artifactId>
     <packaging>jar</packaging>
-    <version>2.2.1</version>
+    <version>2.2.1-VG</version>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    
     <name>vfs-s3</name>
 
     <dependencies>
@@ -23,8 +28,8 @@
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.8.3</version>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.378</version>
         </dependency>
 
         <dependency>
@@ -87,8 +92,7 @@
     <distributionManagement>
         <repository>
             <id>bintray-abashev-vfs-s3-vfs-s3</id>
-            <name>abashev-vfs-s3-vfs-s3</name>
-            <url>https://api.bintray.com/maven/abashev/vfs-s3/vfs-s3/</url>
+            <url>https://nexus.voyagerdev.com/repository/voyager-public</url>
         </repository>
     </distributionManagement>
 

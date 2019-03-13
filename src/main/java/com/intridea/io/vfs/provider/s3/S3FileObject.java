@@ -152,7 +152,9 @@ public class S3FileObject extends AbstractFileObject {
 
     @Override
     protected void doDelete() throws Exception {
-        getService().deleteObject(getBucket().getName(), objectKey);
+        DeleteObjectRequest req = new DeleteObjectRequest(getBucket().getName(), objectKey);
+        req.setRequesterPays(getRequesterPays());
+        getService().deleteObject(req);
     }
 
     @Override
@@ -180,7 +182,9 @@ public class S3FileObject extends AbstractFileObject {
         }
 
         String dirName = objectKey.endsWith(SEPARATOR) ? objectKey : objectKey + SEPARATOR;
-        getService().putObject(new PutObjectRequest(getBucket().getName(), dirName, input, metadata));
+        PutObjectRequest req = new PutObjectRequest(getBucket().getName(), dirName, input, metadata);
+        req.setRequesterPays(getRequesterPays());
+        getService().putObject(req);
     }
 
     @Override
@@ -234,6 +238,7 @@ public class S3FileObject extends AbstractFileObject {
         loReq.setBucketName(getBucket().getName());
         loReq.setDelimiter("/");
         loReq.setPrefix(path);
+        loReq.setRequesterPays(getRequesterPays());
 
         ObjectListing listing = getService().listObjects(loReq);
         final List<S3ObjectSummary> summaries = new ArrayList<S3ObjectSummary>(listing.getObjectSummaries());
@@ -287,6 +292,7 @@ public class S3FileObject extends AbstractFileObject {
         loReq.setBucketName(getBucket().getName());
         loReq.setDelimiter("/");
         loReq.setPrefix(path);
+        loReq.setRequesterPays(getRequesterPays());
 
         ObjectListing listing = getService().listObjects(loReq);
         final List<S3ObjectSummary> summaries = new ArrayList<S3ObjectSummary>(listing.getObjectSummaries());
@@ -350,7 +356,8 @@ public class S3FileObject extends AbstractFileObject {
             final String objectPath = getName().getPath();
 
             try {
-                S3Object obj = getService().getObject(getBucket().getName(), objectKey);
+                GetObjectRequest req = new GetObjectRequest(getBucket().getName(), objectKey, getRequesterPays());
+                S3Object obj = getService().getObject(req);
 
                 logger.info(String.format("Downloading S3 Object: %s", objectPath));
 
@@ -704,7 +711,9 @@ public class S3FileObject extends AbstractFileObject {
 
     public ObjectMetadata getObjectMetadata() throws FileSystemException {
         try {
-            return getService().getObjectMetadata(getBucket().getName(), getS3Key());
+            GetObjectMetadataRequest req = new GetObjectMetadataRequest(getBucket().getName(), getS3Key());
+            req.setRequesterPays(getRequesterPays());
+            return getService().getObjectMetadata(req);
         } catch (AmazonServiceException e) {
             throw new FileSystemException(e);
         }
@@ -834,6 +843,7 @@ public class S3FileObject extends AbstractFileObject {
                         meta.setSSEAlgorithm(AES_256_SERVER_SIDE_ENCRYPTION);
                         copy.setNewObjectMetadata(meta);
                     }
+                    copy.setRequesterPays(getRequesterPays());
                     getService().copyObject(copy);
                 } else if (srcFile.getType().hasContent() && srcFile.getURL().getProtocol().equals("file")) {
                     // do direct upload from file to avoid overhead of making a copy of the file
@@ -884,7 +894,7 @@ public class S3FileObject extends AbstractFileObject {
      */
     private void upload(File file) throws IOException {
         PutObjectRequest request = new PutObjectRequest(getBucket().getName(), getS3Key(), file);
-
+        request.setRequesterPays(getRequesterPays());
         ObjectMetadata md = new ObjectMetadata();
         md.setContentLength(file.length());
         md.setContentType(Mimetypes.getInstance().getMimetype(getName().getBaseName()));
@@ -919,5 +929,9 @@ public class S3FileObject extends AbstractFileObject {
 
     private boolean getServerSideEncryption() {
         return S3FileSystemConfigBuilder.getInstance().getServerSideEncryption(getFileSystem().getFileSystemOptions());
+    }
+
+    private boolean getRequesterPays() {
+        return S3FileSystemConfigBuilder.getInstance().getRequesterPays(getFileSystem().getFileSystemOptions());
     }
 }

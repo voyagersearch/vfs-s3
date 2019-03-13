@@ -8,6 +8,8 @@ import com.amazonaws.services.s3.model.Region;
 import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.util.UserAuthenticatorUtils;
 
+import java.util.Optional;
+
 import static org.apache.commons.vfs2.UserAuthenticationData.PASSWORD;
 import static org.apache.commons.vfs2.UserAuthenticationData.USERNAME;
 import static org.apache.commons.vfs2.util.UserAuthenticatorUtils.getData;
@@ -21,6 +23,7 @@ public class S3FileSystemConfigBuilder extends FileSystemConfigBuilder {
     private static final String MAX_UPLOAD_THREADS = S3FileSystemConfigBuilder.class.getName() + ".MAX_UPLOAD_THREADS";
     private static final String AWS_CREDENTIALS = S3FileSystemConfigBuilder.class.getName() + ".AWS_CREDENTIALS";
     private static final String AMAZON_S3_CLIENT = S3FileSystemConfigBuilder.class.getName() + ".AMAZON_S3_CLIENT";
+    private static final String REQUESTER_PAYS = S3FileSystemConfigBuilder.class.getName() + ".REQUESTER_PAYS";
 
     public static final int DEFAULT_MAX_UPLOAD_THREADS = 2;
 
@@ -195,6 +198,12 @@ public class S3FileSystemConfigBuilder extends FileSystemConfigBuilder {
         return (AmazonS3Client) getParam(opts, AMAZON_S3_CLIENT);
     }
 
+    public void setRequesterPays(FileSystemOptions opts, boolean requesterPays) {
+        setParam(opts, REQUESTER_PAYS, requesterPays);
+    }
+    public boolean getRequesterPays(FileSystemOptions opts) {
+        return (boolean)Optional.ofNullable(getParam(opts, REQUESTER_PAYS)).orElse(false);
+    }
     /**
      * Check for empty string FIXME find the same at Amazon SDK
      *
