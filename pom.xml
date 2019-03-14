@@ -86,7 +86,7 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-abashev-vfs-s3-vfs-s3</id>
+            <id>voyager-public</id>
             <url>https://nexus.voyagerdev.com/repository/voyager-public</url>
         </repository>
     </distributionManagement>
