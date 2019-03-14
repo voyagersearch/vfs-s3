@@ -86,8 +86,8 @@
 
     <distributionManagement>
         <repository>
-            <id>voyager-public</id>
-            <url>https://nexus.voyagerdev.com/repository/voyager-public</url>
+            <id>voyager-upstream</id>
+            <url>https://nexus.voyagerdev.com/repository/voyager-upstream</url>
         </repository>
     </distributionManagement>
 
