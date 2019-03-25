@@ -94,7 +94,9 @@ public class S3FileObject extends AbstractFileObject {
             try {
                 // Do we have file with name?
                 String candidateKey = getS3Key();
-                objectMetadata = getService().getObjectMetadata(getBucket().getName(), candidateKey);
+                GetObjectMetadataRequest req = new GetObjectMetadataRequest(getBucket().getName(), candidateKey);
+                req.setRequesterPays(getRequesterPays());
+                objectMetadata = getService().getObjectMetadata(req);
                 objectKey = candidateKey;
                 logger.info("Attach file to S3 Object: " + objectKey);
 
@@ -110,7 +112,9 @@ public class S3FileObject extends AbstractFileObject {
             try {
                 // Do we have folder with that name?
                 String candidateKey = getS3Key() + FileName.SEPARATOR;
-                objectMetadata = getService().getObjectMetadata(getBucket().getName(), candidateKey);
+                GetObjectMetadataRequest req = new GetObjectMetadataRequest(getBucket().getName(), candidateKey);
+                req.setRequesterPays(getRequesterPays());
+                objectMetadata = getService().getObjectMetadata(req);
                 objectKey = candidateKey;
                 logger.info("Attach folder to S3 Object: " + objectKey);
 
@@ -476,7 +480,14 @@ public class S3FileObject extends AbstractFileObject {
      */
     private AccessControlList getS3Acl() {
         String key = getS3Key();
-        return "".equals(key) ? getService().getBucketAcl(getBucket().getName()) : getService().getObjectAcl(getBucket().getName(), key);
+        if ("".equals(key)) {
+            GetBucketAclRequest req = new GetBucketAclRequest(getBucket().getName());
+            return getService().getBucketAcl(req);
+        } else {
+            GetObjectAclRequest req = new GetObjectAclRequest(getBucket().getName(), key);
+            req.setRequesterPays(getRequesterPays());
+            return getService().getObjectAcl(req);
+        }
     }
 
     /**
